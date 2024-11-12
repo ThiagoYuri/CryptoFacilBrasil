@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/shared.css" />
+</head>
+<body>
+    <div class="exchange-container">
+        <div class="container">
+            <h1 class="text-4xl text-center text-blue-500">Bem-vindo ao CryptoFacilBrasil</h1>
+            <!-- Seu conteúdo com Tailwind aqui -->
+        </div>
+
+        <form method="post" asp-action="Exchange">
+            <div class="form-group">
+                <select id="currencyToBuy" name="currencyToBuy" class="currency-select">
+                    teste
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select id="currencyToPay" name="currencyToPay" class="currency-select">
+                    teste
+                </select>
+            </div>
+
+            <button type="submit" class="exchange-button">Continuar</button>
+        </form>
+    </div>
+
+    <!-- Script para popular as listas de seleção -->
+    <script>
+        // Define uma lista de moedas estática em JSON
+        const currencies = [
+            { Code: "USD", Name: "Dollar", IconPath: "/images/USD.png" },
+            { Code: "EUR", Name: "Euro", IconPath: "/images/EUR.png" },
+            { Code: "GBP", Name: "Pound", IconPath: "/images/GBP.png" },
+            { Code: "JPY", Name: "Yen", IconPath: "/images/JPY.png" }
+            // Adicione mais moedas conforme necessário
+        ];
+
+        function populateSelect(elementId) {
+            const selectElement = document.getElementById(elementId);
+            currencies.forEach(currency => {
+                const option = document.createElement("option");
+                option.value = currency.Code;
+                option.innerHTML = `<img src="${currency.IconPath}" alt="${currency.Name}" class="currency-icon"> ${currency.Name}`;
+                selectElement.appendChild(option);
+            });
+        }
+
+        // Popula as duas listas de seleção
+        populateSelect("currencyToBuy");
+        populateSelect("currencyToPay");
+    </script>
+</body>
+</html>
