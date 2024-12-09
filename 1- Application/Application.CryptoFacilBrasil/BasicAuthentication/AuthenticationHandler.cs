@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -17,11 +18,25 @@ namespace Application.CryptoFacilBrasil.BasicAuthentication
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            Console.WriteLine("Request Headers: ");
-            foreach (var header in Request.Headers)
+            var endpoint = Context.GetEndpoint();           
+
+            // Verifique se o endpoint contém o atributo IAllowAnonymous
+            if (endpoint != null)
             {
-                Console.WriteLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                var allowAnonymous = endpoint.Metadata.GetMetadata<IAllowAnonymous>();
+                if (allowAnonymous != null)
+                //Console.WriteLine("AllowAnonymous encontrado.");
+                // Se o endpoint permitir acesso anônimo, não faça autenticação
+                return Task.FromResult(AuthenticateResult.NoResult());
             }
+
+
+            //Console.WriteLine("Request Headers: ");
+            //foreach (var header in Request.Headers)
+            //{
+            //    Console.WriteLine($"{header.Key}: {string.Join(", ", header.Value)}");
+            //}
+
             // Verificar se o cabeçalho Authorization existe
             if (!Request.Headers.ContainsKey("Authorization"))
                 return Task.FromResult(AuthenticateResult.Fail("Authorization header missing"));
@@ -50,6 +65,7 @@ namespace Application.CryptoFacilBrasil.BasicAuthentication
                 return Task.FromResult(AuthenticateResult.Fail("Invalid Authorization header"));
             }
         }
+
 
         private bool IsValidUser(string username, string password)
         {
